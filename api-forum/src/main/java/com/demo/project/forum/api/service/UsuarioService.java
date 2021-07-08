@@ -40,4 +40,24 @@ public class UsuarioService {
 		
 	}
 	
+	public Page<Usuario> findByNomeContaining(String nome, Pageable pageable) {
+		return usuarioRepository.findByNomeContaining(nome, pageable);
+	}
+	
+	public Usuario findByEmail(String email) {
+		return usuarioRepository.findByEmail(email).orElseThrow(() -> {
+			throw new ObjectNotFoundException(email);
+		});
+	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
