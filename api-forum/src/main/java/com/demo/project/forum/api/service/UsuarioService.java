@@ -1,10 +1,12 @@
 package com.demo.project.forum.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.demo.project.forum.api.exceptions.ObjectNotFoundException;
 import com.demo.project.forum.api.model.Usuario;
 import com.demo.project.forum.api.repository.UsuarioRepository;
 
@@ -14,13 +16,14 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
+	
 	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
 	
 	public Usuario findById(Integer id) {
 		return usuarioRepository.findById(id).orElseThrow(() -> {
-			throw new RuntimeException("Erro");
+			throw new ObjectNotFoundException("User with id: " + id + " not found");
 		});
 	}
 	
@@ -29,7 +32,12 @@ public class UsuarioService {
 	}
 	
 	public void deleteById(Integer id) {
-		usuarioRepository.deleteById(id);
+		try { usuarioRepository.deleteById(id); }
+		
+		catch(EmptyResultDataAccessException e) {
+			throw new ObjectNotFoundException("User with id: " + id + " not found");
+		}
+		
 	}
 	
 }
