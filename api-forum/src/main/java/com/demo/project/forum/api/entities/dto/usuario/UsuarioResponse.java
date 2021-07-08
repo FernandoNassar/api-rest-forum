@@ -1,8 +1,8 @@
-package com.demo.project.forum.api.model.dto.usuario;
+package com.demo.project.forum.api.entities.dto.usuario;
 
 import org.springframework.data.domain.Page;
 
-import com.demo.project.forum.api.model.Usuario;
+import com.demo.project.forum.api.entities.Usuario;
 
 public class UsuarioResponse {
 	

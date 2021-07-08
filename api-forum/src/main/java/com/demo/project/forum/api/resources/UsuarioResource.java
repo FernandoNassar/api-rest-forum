@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.demo.project.forum.api.assembler.UsuarioAssembler;
-import com.demo.project.forum.api.model.Usuario;
-import com.demo.project.forum.api.model.dto.usuario.UsuarioRequest;
-import com.demo.project.forum.api.model.dto.usuario.UsuarioResponse;
-import com.demo.project.forum.api.service.UsuarioService;
+import com.demo.project.forum.api.entities.Usuario;
+import com.demo.project.forum.api.entities.dto.usuario.UsuarioRequest;
+import com.demo.project.forum.api.entities.dto.usuario.UsuarioResponse;
+import com.demo.project.forum.api.services.UsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuarios")
@@ -93,7 +93,9 @@ public class UsuarioResource {
 	}
 	
 	@GetMapping(value = "/search")
-	public ResponseEntity<?> search(@RequestParam(required = false) String nome, @RequestParam(required = false) String email, Pageable pageable) {
+	public ResponseEntity<?> search(@RequestParam(required = false) String nome, 
+			@RequestParam(required = false) String email,
+			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
 		
 		if(nome != null) {
 			Page<UsuarioResponse> response = UsuarioResponse.toDto(usuarioService.findByNomeContaining(nome, pageable));

@@ -1,10 +1,10 @@
-package com.demo.project.forum.api.service;
+package com.demo.project.forum.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.demo.project.forum.api.model.Resposta;
-import com.demo.project.forum.api.repository.RespostaRepository;
+import com.demo.project.forum.api.entities.Resposta;
+import com.demo.project.forum.api.repositories.RespostaRepository;
 
 @Service
 public class RespostaService {

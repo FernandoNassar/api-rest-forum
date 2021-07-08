@@ -1,4 +1,4 @@
-package com.demo.project.forum.api.service;
+package com.demo.project.forum.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -6,9 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.demo.project.forum.api.entities.Usuario;
 import com.demo.project.forum.api.exceptions.ObjectNotFoundException;
-import com.demo.project.forum.api.model.Usuario;
-import com.demo.project.forum.api.repository.UsuarioRepository;
+import com.demo.project.forum.api.repositories.UsuarioRepository;
 
 @Service
 public class UsuarioService {
@@ -37,7 +37,6 @@ public class UsuarioService {
 		catch(EmptyResultDataAccessException e) {
 			throw new ObjectNotFoundException("User with id: " + id + " not found");
 		}
-		
 	}
 	
 	public Page<Usuario> findByNomeContaining(String nome, Pageable pageable) {
@@ -46,7 +45,7 @@ public class UsuarioService {
 	
 	public Usuario findByEmail(String email) {
 		return usuarioRepository.findByEmail(email).orElseThrow(() -> {
-			throw new ObjectNotFoundException(email);
+			throw new ObjectNotFoundException("User with email: " + email + " not found");
 		});
 	}
 	

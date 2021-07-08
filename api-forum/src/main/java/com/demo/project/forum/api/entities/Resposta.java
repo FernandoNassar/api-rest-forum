@@ -1,4 +1,4 @@
-package com.demo.project.forum.api.model;
+package com.demo.project.forum.api.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

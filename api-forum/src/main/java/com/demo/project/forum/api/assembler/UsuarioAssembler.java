@@ -5,7 +5,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
-import com.demo.project.forum.api.model.dto.usuario.UsuarioResponse;
+import com.demo.project.forum.api.entities.dto.usuario.UsuarioResponse;
 import com.demo.project.forum.api.resources.UsuarioResource;
 
 @Component
