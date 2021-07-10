@@ -24,6 +24,10 @@ public class Topico {
 	private List<Resposta> respostas;
 	
 	public Topico() {}
+	
+	public Topico(String titulo, String pergunta, Boolean respondido) {
+		this.titulo = titulo; this.pergunta = pergunta; this.respondido = respondido;
+	}
 
 	public Integer getId() {
 		return id;

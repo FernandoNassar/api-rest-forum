@@ -1,7 +1,5 @@
 package com.demo.project.forum.api.resources;
 
-import java.net.URI;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +7,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,37 +51,51 @@ public class UsuarioResource {
 		return usuarioResourcesAssembler.toModel(response, usuarioAssembler);
 	}
 	
-	@GetMapping(value = "/{usuarioID}")
-	public ResponseEntity<EntityModel<UsuarioResponse>> getById(@PathVariable(name = "usuarioID") Integer usuarioID) {
+	
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<EntityModel<UsuarioResponse>> getById(@PathVariable(name = "id") Integer id) {
 		
-		Usuario usuario = usuarioService.findById(usuarioID);
+		Usuario usuario = usuarioService.findById(id);
+		
 		UsuarioResponse response = new UsuarioResponse(usuario);
 		
 		return ResponseEntity.ok(usuarioAssembler.toModel(response));
 	}
+	
+	
 	
 	@PostMapping
 	public ResponseEntity<EntityModel<UsuarioResponse>> create(@RequestBody UsuarioRequest usuarioRequest, 
 			UriComponentsBuilder uriBuilder) {
 		
 		Usuario usuario = usuarioService.save(usuarioRequest.toEntity());
+		
 		UsuarioResponse response = new UsuarioResponse(usuario);
 		
-		URI uri = uriBuilder.path("/usuarios/{usuarioID}").buildAndExpand(response.getId()).toUri();
+		EntityModel<UsuarioResponse> entityModel = usuarioAssembler.toModel(response);
 		
-		return ResponseEntity.created(uri).body(usuarioAssembler.toModel(response));
+		return ResponseEntity
+				.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+				.body(entityModel);
 	}
 	
-	@PutMapping(value = "/{usuarioID}")
-	public ResponseEntity<EntityModel<UsuarioResponse>> update(@PathVariable(name = "usuarioID") Integer usuarioID,
+	
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<EntityModel<UsuarioResponse>> update(@PathVariable(name = "id") Integer id,
 			@RequestBody UsuarioRequest usuarioRequest) {
 		
-		Usuario usuario = usuarioService.findById(usuarioID);
+		Usuario usuario = usuarioService.findById(id);
+		
 		usuario = usuarioRequest.update(usuario);
+		
 		UsuarioResponse response = new UsuarioResponse(usuario);
 		
 		return ResponseEntity.ok(usuarioAssembler.toModel(response));
 	}
+	
+	
 	
 	@DeleteMapping(value = "/{usuarioID}")
 	public ResponseEntity<Void> delete(@PathVariable(name = "usuarioID") Integer usuarioID) {
@@ -92,18 +105,22 @@ public class UsuarioResource {
 		return ResponseEntity.ok().build();
 	}
 	
+	
+	
 	@GetMapping(value = "/search")
 	public ResponseEntity<?> search(@RequestParam(required = false) String nome, 
 			@RequestParam(required = false) String email,
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
 		
 		if(nome != null) {
-			Page<UsuarioResponse> response = UsuarioResponse.toDto(usuarioService.findByNomeContaining(nome, pageable));
+			Page<Usuario> usuarios = usuarioService.findByNomeContaining(nome, pageable);
+			Page<UsuarioResponse> response = UsuarioResponse.toDto(usuarios);
 			return ResponseEntity.ok(usuarioResourcesAssembler.toModel(response, usuarioAssembler));
 		}
 		
 		if(email != null) {
-			UsuarioResponse response = new UsuarioResponse(usuarioService.findByEmail(email));
+			Usuario usuario = usuarioService.findByEmail(email);
+			UsuarioResponse response = new UsuarioResponse(usuario);
 			return ResponseEntity.ok(usuarioAssembler.toModel(response));
 		}
 		
