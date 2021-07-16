@@ -1,5 +1,6 @@
 package com.demo.project.forum.api.resources;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,13 +41,20 @@ public class UsuarioResource {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	
 	
 	@GetMapping
 	public PagedModel<EntityModel<UsuarioResponse>> getAll(
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
 			// ?page=0&size=10&sort=id,desc
 		
-		Page<UsuarioResponse> response = UsuarioResponse.toDto(usuarioService.findAll(pageable));
+		Page<Usuario> usuarios = usuarioService.findAll(pageable);
+		
+		Page<UsuarioResponse> response = usuarios
+				.map(u -> modelMapper.map(u, UsuarioResponse.class));
 		
 		return usuarioResourcesAssembler.toModel(response, usuarioAssembler);
 	}
@@ -58,7 +66,7 @@ public class UsuarioResource {
 		
 		Usuario usuario = usuarioService.findById(id);
 		
-		UsuarioResponse response = new UsuarioResponse(usuario);
+		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
 		
 		return ResponseEntity.ok(usuarioAssembler.toModel(response));
 	}
@@ -71,7 +79,7 @@ public class UsuarioResource {
 		
 		Usuario usuario = usuarioService.save(usuarioRequest.toEntity());
 		
-		UsuarioResponse response = new UsuarioResponse(usuario);
+		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
 		
 		EntityModel<UsuarioResponse> entityModel = usuarioAssembler.toModel(response);
 		
@@ -90,7 +98,7 @@ public class UsuarioResource {
 		
 		usuario = usuarioRequest.update(usuario);
 		
-		UsuarioResponse response = new UsuarioResponse(usuario);
+		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
 		
 		return ResponseEntity.ok(usuarioAssembler.toModel(response));
 	}
@@ -114,13 +122,13 @@ public class UsuarioResource {
 		
 		if(nome != null) {
 			Page<Usuario> usuarios = usuarioService.findByNomeContaining(nome, pageable);
-			Page<UsuarioResponse> response = UsuarioResponse.toDto(usuarios);
+			Page<UsuarioResponse> response = usuarios.map(usuario -> modelMapper.map(usuarios, UsuarioResponse.class));
 			return ResponseEntity.ok(usuarioResourcesAssembler.toModel(response, usuarioAssembler));
 		}
 		
 		if(email != null) {
 			Usuario usuario = usuarioService.findByEmail(email);
-			UsuarioResponse response = new UsuarioResponse(usuario);
+			UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
 			return ResponseEntity.ok(usuarioAssembler.toModel(response));
 		}
 		

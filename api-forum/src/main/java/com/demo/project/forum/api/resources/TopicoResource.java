@@ -41,6 +41,7 @@ public class TopicoResource {
 	private PagedResourcesAssembler<TopicoResponse> topicoResourcesAssembler;
 	
 	
+	
 	@GetMapping
 	public ResponseEntity<PagedModel<EntityModel<TopicoResponse>>> getAll(
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {

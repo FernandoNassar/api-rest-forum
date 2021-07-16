@@ -1,5 +1,7 @@
 package com.demo.project.forum.api.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +22,7 @@ public class RespostaService {
 		return respostaRepository.findById(id).get();
 	}
 	
+	public List<Resposta> findAll() {
+		return respostaRepository.findAll();
+	}
 }
