@@ -22,8 +22,10 @@ public class Usuario {
 	private String senha;
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "usuarios")
 	private List<Perfil> perfis;
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "topico")
 	private List<Resposta> respostas;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+	private List<Topico> topicos;
 	
 	public Usuario() {}
 
@@ -73,6 +75,14 @@ public class Usuario {
 
 	public void setRespostas(List<Resposta> respostas) {
 		this.respostas = respostas;
+	}
+
+	public List<Topico> getTopicos() {
+		return topicos;
+	}
+
+	public void setTopicos(List<Topico> topicos) {
+		this.topicos = topicos;
 	}
 
 }

@@ -12,6 +12,7 @@ public class UsuarioResponse {
 	private String nome;
 	private String email;
 	private List<UsuarioResposta> respostas;
+	private List<UsuarioTopico> topicos;
 	
 	
 	public UsuarioResponse() {}
@@ -58,6 +59,14 @@ public class UsuarioResponse {
 
 	public void setRespostas(List<UsuarioResposta> respostas) {
 		this.respostas = respostas;
+	}
+
+	public List<UsuarioTopico> getTopicos() {
+		return topicos;
+	}
+
+	public void setTopicos(List<UsuarioTopico> topicos) {
+		this.topicos = topicos;
 	}
 
 	public static Page<UsuarioResponse> toDto(Page<Usuario> usuarios) {

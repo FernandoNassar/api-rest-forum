@@ -7,6 +7,7 @@ public class TopicoRequest {
 	private String titulo;
 	private String pergunta;
 	private Boolean respondido;
+	private Integer usuarioID;
 	
 	public TopicoRequest() {}
 
@@ -37,7 +38,15 @@ public class TopicoRequest {
 	public Topico toEntity() {
 		return update(new Topico());
 	}
-	
+
+	public Integer getUsuarioID() {
+		return usuarioID;
+	}
+
+	public void setUsuarioID(Integer usuarioID) {
+		this.usuarioID = usuarioID;
+	}
+
 	public Topico update(Topico topico) {
 		topico.setTitulo(titulo);
 		topico.setPergunta(pergunta);

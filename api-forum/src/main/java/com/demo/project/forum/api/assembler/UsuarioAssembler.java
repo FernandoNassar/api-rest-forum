@@ -16,6 +16,8 @@ public class UsuarioAssembler implements RepresentationModelAssembler<UsuarioRes
 		
 		return EntityModel.of(entity,
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioResource.class).getById(entity.getId())).withSelfRel(),
+				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioResource.class).topicosByUsuario(entity.getId(), null)).withRel("topicos"),
+				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioResource.class).respostasByUsuario(entity.getId(), null)).withRel("respostas"),
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioResource.class).getAll(null)).withRel("usuarios"));
 	}
 

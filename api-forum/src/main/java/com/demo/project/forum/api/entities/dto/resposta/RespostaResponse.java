@@ -5,7 +5,7 @@ public class RespostaResponse {
 	private Integer id;
 	private String texto;
 	private RespostaUsuario usuario;
-	private TopicoResponse topico;
+	private RespostaTopico topico;
 	
 	public Integer getId() {
 		return id;
@@ -25,10 +25,10 @@ public class RespostaResponse {
 	public void setUsuario(RespostaUsuario usuario) {
 		this.usuario = usuario;
 	}
-	public TopicoResponse getTopico() {
+	public RespostaTopico getTopico() {
 		return topico;
 	}
-	public void setTopico(TopicoResponse topico) {
+	public void setTopico(RespostaTopico topico) {
 		this.topico = topico;
 	}
 

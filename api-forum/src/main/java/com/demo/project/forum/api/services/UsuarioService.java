@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.demo.project.forum.api.entities.Resposta;
+import com.demo.project.forum.api.entities.Topico;
 import com.demo.project.forum.api.entities.Usuario;
 import com.demo.project.forum.api.exceptions.ObjectNotFoundException;
 import com.demo.project.forum.api.repositories.UsuarioRepository;
@@ -49,6 +51,13 @@ public class UsuarioService {
 		});
 	}
 	
+	public Page<Topico> findTopicoByUsuarioId(Integer id, Pageable pageable) {
+		return usuarioRepository.findTopicosByUsuarioId(id, pageable);
+	}
+	
+	public Page<Resposta> findRespostaByUsuarioId(Integer id, Pageable pageable) {
+		return usuarioRepository.findRespostaByUsuarioId(id, pageable);
+	}
 	
 }
 

@@ -16,6 +16,8 @@ public class TopicoAssembler implements RepresentationModelAssembler<TopicoRespo
 		
 		return EntityModel.of(entity,
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TopicoResource.class).getById(entity.getId())).withSelfRel(),
+				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TopicoResource.class).usuarioByTopico(entity.getId(), null)).withRel("usuario"),
+				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TopicoResource.class).respostasByTopico(entity.getId(), null)).withRel("respostas"),
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TopicoResource.class).getAll(null)).withRel("topicos"));
 	}
 

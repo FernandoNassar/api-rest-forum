@@ -1,6 +1,6 @@
 package com.demo.project.forum.api.entities.dto.resposta;
 
-public class TopicoResponse {
+public class RespostaTopico {
 	
 	public Integer id;
 	public String titulo;

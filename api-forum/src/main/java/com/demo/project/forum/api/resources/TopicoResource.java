@@ -1,5 +1,6 @@
 package com.demo.project.forum.api.resources;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.project.forum.api.assembler.RespostaAssembler;
 import com.demo.project.forum.api.assembler.TopicoAssembler;
+import com.demo.project.forum.api.assembler.UsuarioAssembler;
+import com.demo.project.forum.api.entities.Resposta;
 import com.demo.project.forum.api.entities.Topico;
+import com.demo.project.forum.api.entities.Usuario;
+import com.demo.project.forum.api.entities.dto.resposta.RespostaResponse;
 import com.demo.project.forum.api.entities.dto.topico.TopicoRequest;
 import com.demo.project.forum.api.entities.dto.topico.TopicoResponse;
+import com.demo.project.forum.api.entities.dto.usuario.UsuarioResponse;
 import com.demo.project.forum.api.services.TopicoService;
+import com.demo.project.forum.api.services.UsuarioService;
 
 @RestController
 @RequestMapping("/topicos")
@@ -35,10 +43,27 @@ public class TopicoResource {
 	private TopicoService topicoService;
 	
 	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
 	private TopicoAssembler topicoAssembler;
 	
 	@Autowired
+	private UsuarioAssembler usuarioAssembler;
+	
+	@Autowired
+	private RespostaAssembler respostaAssembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<RespostaResponse> respostaResourcesAssembler;
+	
+	@Autowired
 	private PagedResourcesAssembler<TopicoResponse> topicoResourcesAssembler;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	
 	
 	
 	
@@ -46,17 +71,23 @@ public class TopicoResource {
 	public ResponseEntity<PagedModel<EntityModel<TopicoResponse>>> getAll(
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
 		
-		Page<TopicoResponse> response = TopicoResponse.toDto(topicoService.findAll(pageable));
+		Page<Topico> topicos = topicoService.findAll(pageable);
+		
+		Page<TopicoResponse> response = topicos.map(t -> modelMapper.map(t, TopicoResponse.class));
 			
 		return ResponseEntity.ok(topicoResourcesAssembler.toModel(response, topicoAssembler));		
 	}
 	
 	
 	
+	
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<EntityModel<TopicoResponse>> getById(@PathVariable("id") Integer id) {
 		
-		TopicoResponse response = new TopicoResponse(topicoService.findById(id));
+		Topico topico = topicoService.findById(id);
+		
+		TopicoResponse response = modelMapper.map(topico, TopicoResponse.class);
 		
 		HttpHeaders header = new HttpHeaders();
 		
@@ -67,13 +98,15 @@ public class TopicoResource {
 	
 	
 	
+	
+	
 	@GetMapping("/search")
 	public ResponseEntity<?> search(@RequestParam(required = false) String titulo,
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
 		
 		if(titulo != null) {
 			Page<Topico> topicos = topicoService.findByTituloContaining(titulo, pageable);
-			Page<TopicoResponse> response = TopicoResponse.toDto(topicos);	
+			Page<TopicoResponse> response = topicos.map(t -> modelMapper.map(t, TopicoResponse.class));
 			
 			return ResponseEntity.ok(topicoResourcesAssembler.toModel(response, topicoAssembler));
 		}	
@@ -83,12 +116,16 @@ public class TopicoResource {
 	
 	
 	
+	
+	
 	@PostMapping
 	public ResponseEntity<EntityModel<TopicoResponse>> create(@RequestBody TopicoRequest topicoRequest) {
 		
-		Topico topico = topicoService.save(topicoRequest.toEntity());
+		Topico topico = modelMapper.map(topicoRequest, Topico.class);
+		topico.setUsuario(usuarioService.findById(topicoRequest.getUsuarioID()));
+		topico = topicoService.save(topico);
 		
-		TopicoResponse response = new TopicoResponse(topico);
+		TopicoResponse response = modelMapper.map(topico, TopicoResponse.class);
 		
 		EntityModel<TopicoResponse> entityModel = topicoAssembler.toModel(response);
 
@@ -99,13 +136,17 @@ public class TopicoResource {
 	
 	
 	
+	
+	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<EntityModel<TopicoResponse>> update(@PathVariable(name = "id") Integer id, 
 			@RequestBody TopicoRequest topicoRequest) {
 		
 		Topico topico = topicoRequest.update(topicoService.findById(id));
 		
-		TopicoResponse response = new TopicoResponse(topicoService.save(topico));
+		topico = topicoService.save(topico);
+		
+		TopicoResponse response = modelMapper.map(topico, TopicoResponse.class);
 		
 		EntityModel<TopicoResponse> entityModel = topicoAssembler.toModel(response);
 		
@@ -113,7 +154,42 @@ public class TopicoResource {
 				.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
 				.body(entityModel);
 	}
-
+	
+	
+	
+	
+	
+	@GetMapping("/{id}/usuario")
+	public ResponseEntity<?> usuarioByTopico(
+			@PathVariable(name="id") Integer id, 
+			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
+		
+		Usuario usuario = topicoService.findById(id).getUsuario();
+		
+		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
+		
+		return ResponseEntity.ok(usuarioAssembler.toModel(response));
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/{id}/respostas")
+	public ResponseEntity<?> respostasByTopico(
+			@PathVariable(name="id") Integer id, 
+			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
+		
+		Page<Resposta> respostas = topicoService.findRespostasByTopico(id, pageable);
+		
+		Page<RespostaResponse> response = respostas.map(r -> modelMapper.map(r, RespostaResponse.class));
+		
+		return ResponseEntity.ok(respostaResourcesAssembler.toModel(response, respostaAssembler));
+		
+		
+	}
+	
+	
 }
 
 

@@ -22,8 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.demo.project.forum.api.assembler.RespostaAssembler;
+import com.demo.project.forum.api.assembler.TopicoAssembler;
 import com.demo.project.forum.api.assembler.UsuarioAssembler;
+import com.demo.project.forum.api.entities.Resposta;
+import com.demo.project.forum.api.entities.Topico;
 import com.demo.project.forum.api.entities.Usuario;
+import com.demo.project.forum.api.entities.dto.resposta.RespostaResponse;
+import com.demo.project.forum.api.entities.dto.topico.TopicoResponse;
 import com.demo.project.forum.api.entities.dto.usuario.UsuarioRequest;
 import com.demo.project.forum.api.entities.dto.usuario.UsuarioResponse;
 import com.demo.project.forum.api.services.UsuarioService;
@@ -36,7 +42,19 @@ public class UsuarioResource {
 	private UsuarioAssembler usuarioAssembler;
 	
 	@Autowired
+	private TopicoAssembler topicoAssembler;
+	
+	@Autowired
+	private RespostaAssembler respostaAssember;
+	
+	@Autowired
 	private PagedResourcesAssembler<UsuarioResponse> usuarioResourcesAssembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<TopicoResponse> topicoResourcesAssembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<RespostaResponse> respostaResourcesAssembler;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -61,6 +79,8 @@ public class UsuarioResource {
 	
 	
 	
+	
+	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<EntityModel<UsuarioResponse>> getById(@PathVariable(name = "id") Integer id) {
 		
@@ -70,6 +90,8 @@ public class UsuarioResource {
 		
 		return ResponseEntity.ok(usuarioAssembler.toModel(response));
 	}
+	
+	
 	
 	
 	
@@ -90,6 +112,8 @@ public class UsuarioResource {
 	
 	
 	
+	
+	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<EntityModel<UsuarioResponse>> update(@PathVariable(name = "id") Integer id,
 			@RequestBody UsuarioRequest usuarioRequest) {
@@ -105,13 +129,50 @@ public class UsuarioResource {
 	
 	
 	
-	@DeleteMapping(value = "/{usuarioID}")
-	public ResponseEntity<Void> delete(@PathVariable(name = "usuarioID") Integer usuarioID) {
+	
+	
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable(name = "usuarioID") Integer id) {
 		
-		usuarioService.deleteById(usuarioID);
+		usuarioService.deleteById(id);
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	
+	
+	
+	
+	@GetMapping("/{id}/topicos")
+	public ResponseEntity<PagedModel<EntityModel<TopicoResponse>>> topicosByUsuario(
+			@PathVariable("id") Integer id, 
+			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
+		
+		Page<Topico> topicos = usuarioService.findTopicoByUsuarioId(id, pageable);
+		
+		Page<TopicoResponse> response = topicos.map(t -> modelMapper.map(t, TopicoResponse.class));
+		
+		return ResponseEntity.ok(topicoResourcesAssembler.toModel(response, topicoAssembler));	
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/{id}/respostas")
+	public ResponseEntity<PagedModel<EntityModel<RespostaResponse>>> respostasByUsuario(
+			@PathVariable("id") Integer id, 
+			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
+		
+		Page<Resposta> respostas = usuarioService.findRespostaByUsuarioId(id, pageable);
+		
+		Page<RespostaResponse> response = respostas.map(r -> modelMapper.map(r, RespostaResponse.class));
+		
+		return ResponseEntity.ok(respostaResourcesAssembler.toModel(response, respostaAssember));
+		
+	}
+	
+	
 	
 	
 	
