@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.demo.project.forum.api.entities.Resposta;
@@ -18,6 +20,12 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
+	
+	public Usuario create(Usuario usuario) {
+		BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
+		usuario.setSenha(bCryptEncoder.encode(usuario.getSenha()));
+		return usuarioRepository.save(usuario);
+	}
 	
 	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
@@ -47,7 +55,8 @@ public class UsuarioService {
 	
 	public Usuario findByEmail(String email) {
 		return usuarioRepository.findByEmail(email).orElseThrow(() -> {
-			throw new ObjectNotFoundException("User with email: " + email + " not found");
+			throw new UsernameNotFoundException(String.format("User does not exist", email));
+//			throw new ObjectNotFoundException("User with email: " + email + " not found");
 		});
 	}
 	

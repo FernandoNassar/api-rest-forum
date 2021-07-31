@@ -99,7 +99,8 @@ public class UsuarioResource {
 	public ResponseEntity<EntityModel<UsuarioResponse>> create(@RequestBody UsuarioRequest usuarioRequest, 
 			UriComponentsBuilder uriBuilder) {
 		
-		Usuario usuario = usuarioService.save(usuarioRequest.toEntity());
+//		Usuario usuario = usuarioService.save(usuarioRequest.toEntity());
+		Usuario usuario = usuarioService.create(usuarioRequest.toEntity());
 		
 		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
 		

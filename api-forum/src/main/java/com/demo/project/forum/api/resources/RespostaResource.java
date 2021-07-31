@@ -24,7 +24,6 @@ import com.demo.project.forum.api.entities.Topico;
 import com.demo.project.forum.api.entities.Usuario;
 import com.demo.project.forum.api.entities.dto.resposta.RespostaRequest;
 import com.demo.project.forum.api.entities.dto.resposta.RespostaResponse;
-import com.demo.project.forum.api.entities.dto.resposta.RespostaTopico;
 import com.demo.project.forum.api.entities.dto.topico.TopicoResponse;
 import com.demo.project.forum.api.entities.dto.usuario.UsuarioResponse;
 import com.demo.project.forum.api.services.RespostaService;

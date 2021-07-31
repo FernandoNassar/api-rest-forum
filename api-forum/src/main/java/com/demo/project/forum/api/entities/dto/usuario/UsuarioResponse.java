@@ -1,7 +1,5 @@
 package com.demo.project.forum.api.entities.dto.usuario;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 import com.demo.project.forum.api.entities.Usuario;
@@ -11,8 +9,6 @@ public class UsuarioResponse {
 	private Integer id;
 	private String nome;
 	private String email;
-	private List<UsuarioResposta> respostas;
-	private List<UsuarioTopico> topicos;
 	
 	
 	public UsuarioResponse() {}
@@ -51,22 +47,6 @@ public class UsuarioResponse {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public List<UsuarioResposta> getRespostas() {
-		return respostas;
-	}
-
-	public void setRespostas(List<UsuarioResposta> respostas) {
-		this.respostas = respostas;
-	}
-
-	public List<UsuarioTopico> getTopicos() {
-		return topicos;
-	}
-
-	public void setTopicos(List<UsuarioTopico> topicos) {
-		this.topicos = topicos;
 	}
 
 	public static Page<UsuarioResponse> toDto(Page<Usuario> usuarios) {

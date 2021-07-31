@@ -1,8 +1,11 @@
 package com.demo.project.forum.api.exceptions;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-public class Error {
+public class Error implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	
 	private Instant timeStamp;
 	private Integer status;

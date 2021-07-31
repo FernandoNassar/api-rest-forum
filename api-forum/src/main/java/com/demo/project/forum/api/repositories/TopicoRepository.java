@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.demo.project.forum.api.entities.Resposta;
 import com.demo.project.forum.api.entities.Topico;
-import com.demo.project.forum.api.entities.Usuario;
 
 @Repository
 public interface TopicoRepository extends PagingAndSortingRepository<Topico, Integer> {

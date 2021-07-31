@@ -18,5 +18,6 @@ public interface ExceptionUtil {
 		error.setPath(request.getRequestURI());
 		return error;
 	}
+
 	
 }

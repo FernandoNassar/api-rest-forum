@@ -19,7 +19,7 @@ public class RespostaAssembler implements RepresentationModelAssembler<RespostaR
 				linkTo(methodOn(RespostaResource.class).getById(entity.getId())).withSelfRel(),
 				linkTo(methodOn(RespostaResource.class).topicoByResposta(entity.getId())).withRel("topico"),
 				linkTo(methodOn(RespostaResource.class).usuarioByResposta(entity.getId())).withRel("usuario"),
-				linkTo(methodOn(RespostaResource.class).getAll(null)).withRel("respostas"));
+				linkTo(methodOn(RespostaResource.class).getAll(null)).withRel("todos"));
 	}
 	
 	
