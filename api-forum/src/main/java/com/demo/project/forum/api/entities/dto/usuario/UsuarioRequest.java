@@ -1,11 +1,20 @@
 package com.demo.project.forum.api.entities.dto.usuario;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.demo.project.forum.api.entities.Usuario;
 
 public class UsuarioRequest {
 	
+	@NotNull @NotEmpty @Length(min = 5)
 	private String nome;
+	@NotNull @NotEmpty @Email
 	private String email;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String senha;
 	
 	public UsuarioRequest() {}

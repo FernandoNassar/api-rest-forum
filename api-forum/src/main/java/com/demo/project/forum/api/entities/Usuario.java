@@ -3,7 +3,6 @@ package com.demo.project.forum.api.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,15 +11,18 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity @Table(name = "usuarios")
+@Entity 
+@Table(name = "usuarios", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class Usuario implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -31,25 +33,18 @@ public class Usuario implements UserDetails {
 	@Column(unique = true)
 	private String email;
 	private String senha;
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "usuarios")
-	private List<Perfil> perfis = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "usuario_role", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private List<Role> roles = new ArrayList<>();
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "topico")
 	private List<Resposta> respostas;
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
 	private List<Topico> topicos;
 	
-	public Usuario() {}
 	
-	public Usuario(Usuario usuario) {
-		this.id = usuario.getId();
-		this.nome = usuario.getNome();
-		this.email = usuario.getEmail();
-		this.senha = usuario.getSenha();
-		this.perfis = usuario.getPerfis();
-		this.respostas = usuario.getRespostas();
-		this.topicos = usuario.getTopicos();
-	}
+	public Usuario() {}
 
+	
 	public Integer getId() {
 		return id;
 	}
@@ -82,12 +77,12 @@ public class Usuario implements UserDetails {
 		this.senha = senha;
 	}
 
-	public List<Perfil> getPerfis() {
-		return perfis;
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	public void setPerfis(List<Perfil> perfis) {
-		this.perfis = perfis;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 	public List<Resposta> getRespostas() {
@@ -107,11 +102,11 @@ public class Usuario implements UserDetails {
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getPerfis()
-				.stream()
-				.map(x -> new SimpleGrantedAuthority(x.getNome()))
-				.collect(Collectors.toList());
+	public Collection<? extends GrantedAuthority> getAuthorities() {	
+//		return roles.stream()
+//				.map(x -> new SimpleGrantedAuthority(x.getNome()))
+//				.collect(Collectors.toList());
+		return this.roles;
 	}
 
 	@Override

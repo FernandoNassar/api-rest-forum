@@ -14,7 +14,6 @@ public interface TopicoRepository extends PagingAndSortingRepository<Topico, Int
 
 	Page<Topico> findByTituloContaining(String titulo, Pageable pageable);
 	
-//	@Query(value = "SELECT * FROM resposta WHERE topico_id = :id", nativeQuery = true)
 	@Query("SELECT r FROM Resposta r WHERE r.topico.id = :id")
 	Page<Resposta> findRespostasByTopico(Integer id, Pageable pageable);
 

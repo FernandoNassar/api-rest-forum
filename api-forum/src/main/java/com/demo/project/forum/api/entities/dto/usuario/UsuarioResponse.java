@@ -1,23 +1,17 @@
 package com.demo.project.forum.api.entities.dto.usuario;
 
-import org.springframework.data.domain.Page;
-
-import com.demo.project.forum.api.entities.Usuario;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioResponse {
 	
 	private Integer id;
 	private String nome;
 	private String email;
+	private List<String> roles = new ArrayList<>();
 	
 	
 	public UsuarioResponse() {}
-	
-	public UsuarioResponse(Usuario usuario) {
-		this.id = usuario.getId();
-		this.nome = usuario.getNome();
-		this.email = usuario.getEmail();
-	}
 
 	
 	public Integer getId() {
@@ -48,9 +42,17 @@ public class UsuarioResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public static Page<UsuarioResponse> toDto(Page<Usuario> usuarios) {
-		return usuarios.map(UsuarioResponse::new);
+	
+	public List<String> getRoles() {
+		return this.roles;
+	}
+	
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+	
+	public void addRole(String role) {
+		this.roles.add(role);
 	}
 	
 }

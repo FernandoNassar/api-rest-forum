@@ -32,9 +32,9 @@ public class UsuarioService {
 	}
 	
 	public Usuario findById(Integer id) {
-		return usuarioRepository.findById(id).orElseThrow(() -> {
-			throw new ObjectNotFoundException("User with id: " + id + " not found");
-		});
+		return usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("User with id: " + id + " not found"));
 	}
 	
 	public Page<Usuario> findAll(Pageable pageable) {
@@ -54,10 +54,9 @@ public class UsuarioService {
 	}
 	
 	public Usuario findByEmail(String email) {
-		return usuarioRepository.findByEmail(email).orElseThrow(() -> {
-			throw new UsernameNotFoundException(String.format("User does not exist", email));
-//			throw new ObjectNotFoundException("User with email: " + email + " not found");
-		});
+		return usuarioRepository
+				.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException(String.format("User does not exist", email)));
 	}
 	
 	public Page<Topico> findTopicoByUsuarioId(Integer id, Pageable pageable) {

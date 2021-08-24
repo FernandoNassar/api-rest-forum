@@ -4,7 +4,6 @@ import static com.demo.project.forum.api.security.Constants.SECRET;
 import static com.demo.project.forum.api.security.Constants.TOKEN_PREFIX;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,11 +19,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.demo.project.forum.api.entities.Usuario;
+import com.demo.project.forum.api.services.UsuarioService;
+
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
-	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+	
+	private UsuarioService service;
+	
+	public JWTAuthorizationFilter(AuthenticationManager authenticationManager, UsuarioService service) {
 		super(authenticationManager);
+		this.service = service;
 	}
 	
 	@Override
@@ -52,15 +57,18 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	
 	
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+		
 		String token = request.getHeader("Authorization");
 		
 		if(token != null) {
-			String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+			String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
 					.build()
 					.verify(token.replace(TOKEN_PREFIX, ""))
 					.getSubject();
+
+			Usuario usuario = service.findByEmail(username);
 			
-			if(user != null) return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());		
+			if(username != null) return new UsernamePasswordAuthenticationToken(username, null, usuario.getAuthorities());		
 		}
 		
 		return null;

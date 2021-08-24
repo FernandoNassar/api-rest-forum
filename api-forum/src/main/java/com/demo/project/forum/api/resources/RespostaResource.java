@@ -1,5 +1,7 @@
 package com.demo.project.forum.api.resources;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -84,7 +86,7 @@ public class RespostaResource {
 	
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<EntityModel<RespostaResponse>> create(@RequestBody RespostaRequest request) {
+	public ResponseEntity<EntityModel<RespostaResponse>> create(@RequestBody @Valid RespostaRequest request) {
 		
 		Resposta resposta = modelMapper.map(request, Resposta.class);
 		
@@ -104,7 +106,8 @@ public class RespostaResource {
 	
 	
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
-	public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody RespostaRequest request) {
+	public ResponseEntity<?> update(@PathVariable("id") Integer id, 
+			@RequestBody @Valid RespostaRequest request) {
 		
 		Resposta resposta = respostaService.update(id, request);
 		

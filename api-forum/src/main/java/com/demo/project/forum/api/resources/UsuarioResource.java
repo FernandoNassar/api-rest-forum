@@ -1,5 +1,8 @@
 package com.demo.project.forum.api.resources;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.demo.project.forum.api.assembler.RespostaAssembler;
 import com.demo.project.forum.api.assembler.TopicoAssembler;
 import com.demo.project.forum.api.assembler.UsuarioAssembler;
 import com.demo.project.forum.api.entities.Resposta;
+import com.demo.project.forum.api.entities.Role;
 import com.demo.project.forum.api.entities.Topico;
 import com.demo.project.forum.api.entities.Usuario;
 import com.demo.project.forum.api.entities.dto.resposta.RespostaResponse;
@@ -67,7 +70,11 @@ public class UsuarioResource {
 	@GetMapping
 	public PagedModel<EntityModel<UsuarioResponse>> getAll(
 			@PageableDefault(sort = "id", size = 10, direction = Direction.ASC) Pageable pageable) {
-			// ?page=0&size=10&sort=id,desc
+		
+		// ?page=0&size=10&sort=id,desc
+		
+		var modelMapper = new ModelMapper();
+		modelMapper.createTypeMap(Role.class, UsuarioResponse.class).addMapping(Role::toString, UsuarioResponse::addRole);
 		
 		Page<Usuario> usuarios = usuarioService.findAll(pageable);
 		
@@ -96,10 +103,9 @@ public class UsuarioResource {
 	
 	
 	@PostMapping
-	public ResponseEntity<EntityModel<UsuarioResponse>> create(@RequestBody UsuarioRequest usuarioRequest, 
-			UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<EntityModel<UsuarioResponse>> create(
+			@RequestBody @Valid UsuarioRequest usuarioRequest) {
 		
-//		Usuario usuario = usuarioService.save(usuarioRequest.toEntity());
 		Usuario usuario = usuarioService.create(usuarioRequest.toEntity());
 		
 		UsuarioResponse response = modelMapper.map(usuario, UsuarioResponse.class);
@@ -115,9 +121,11 @@ public class UsuarioResource {
 	
 	
 	
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<EntityModel<UsuarioResponse>> update(@PathVariable(name = "id") Integer id,
-			@RequestBody UsuarioRequest usuarioRequest) {
+	@PutMapping(value = "/{id}") 
+	@Transactional
+	public ResponseEntity<EntityModel<UsuarioResponse>> update(
+			@PathVariable(name = "id") Integer id,
+			@RequestBody @Valid UsuarioRequest usuarioRequest) {
 		
 		Usuario usuario = usuarioService.findById(id);
 		
@@ -133,7 +141,7 @@ public class UsuarioResource {
 	
 	
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable(name = "usuarioID") Integer id) {
+	public ResponseEntity<Void> delete(@PathVariable(name = "id") Integer id) {
 		
 		usuarioService.deleteById(id);
 		
@@ -152,8 +160,9 @@ public class UsuarioResource {
 		Page<Topico> topicos = usuarioService.findTopicoByUsuarioId(id, pageable);
 		
 		Page<TopicoResponse> response = topicos.map(t -> modelMapper.map(t, TopicoResponse.class));
-		
+				
 		return ResponseEntity.ok(topicoResourcesAssembler.toModel(response, topicoAssembler));	
+		
 	}
 	
 	

@@ -1,14 +1,20 @@
 package com.demo.project.forum.api.entities.dto.resposta;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
+
 public class RespostaRequest {
-	private Integer id;
+	
+	@NotNull @NotEmpty @Length(min = 5)
 	private String texto;
+	@NotNull
 	private Integer usuarioID;
+	@NotNull
 	private Integer topicoID;
 	
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	public void setTexto(String texto) {
 		this.texto = texto;
 	}
@@ -17,9 +23,6 @@ public class RespostaRequest {
 	}
 	public void setTopicoID(Integer topicoID) {
 		this.topicoID = topicoID;
-	}
-	public Integer getId() {
-		return id;
 	}
 	public String getTexto() {
 		return texto;

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.demo.project.forum.api.entities.Resposta;
 import com.demo.project.forum.api.entities.Topico;
-import com.demo.project.forum.api.entities.Usuario;
 import com.demo.project.forum.api.exceptions.ObjectNotFoundException;
 import com.demo.project.forum.api.repositories.TopicoRepository;
 
@@ -17,14 +16,15 @@ public class TopicoService {
 	@Autowired
 	private TopicoRepository topicoRepository;
 	
+	
 	public Topico save(Topico topico) {
 		return topicoRepository.save(topico);
 	}
 	
 	public Topico findById(Integer id) {
-		return topicoRepository.findById(id).orElseThrow(() -> {
-			throw new ObjectNotFoundException("topic with id: " + id + " not found");
-		});
+		return topicoRepository
+				.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("topic with id: " + id + " not found"));
 	}
 	
 	public Page<Topico> findAll(Pageable pageable) {
@@ -33,10 +33,6 @@ public class TopicoService {
 	
 	public Page<Topico> findByTituloContaining(String titulo, Pageable pageable) {
 		return topicoRepository.findByTituloContaining(titulo, pageable);
-	}
-	
-	public Page<Usuario> findUsuarioByTopicoId(Integer id, Pageable pageable) {
-		return null;
 	}
 	
 	public Page<Resposta> findRespostasByTopico(Integer id, Pageable pageable) {

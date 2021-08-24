@@ -1,9 +1,5 @@
 package com.demo.project.forum.api.entities.dto.topico;
 
-import org.springframework.data.domain.Page;
-
-import com.demo.project.forum.api.entities.Topico;
-
 public class TopicoResponse {
 	
 	private Integer id;
@@ -13,13 +9,6 @@ public class TopicoResponse {
 	private TopicoUsuario usuario;
 	
 	public TopicoResponse() {}
-	
-	public TopicoResponse(Topico topico) {
-		this.id = topico.getId();
-		this.titulo = topico.getTitulo();
-		this.pergunta = topico.getPergunta();
-		this.respondido = topico.getRespondido();
-	}
 
 
 	public Integer getId() {
@@ -60,10 +49,6 @@ public class TopicoResponse {
 
 	public void setUsuario(TopicoUsuario usuario) {
 		this.usuario = usuario;
-	}
-
-	public static Page<TopicoResponse> toDto(Page<Topico> topicos) {
-		return topicos.map(TopicoResponse::new);
 	}
 	
 }

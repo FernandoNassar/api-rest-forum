@@ -1,12 +1,20 @@
 package com.demo.project.forum.api.entities.dto.topico;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.demo.project.forum.api.entities.Topico;
 
 public class TopicoRequest {
 	
+	@NotNull @NotEmpty @Length(min = 5)
 	private String titulo;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String pergunta;
 	private Boolean respondido;
+	@NotNull
 	private Integer usuarioID;
 	
 	public TopicoRequest() {}

@@ -1,5 +1,8 @@
 package com.demo.project.forum.api.resources;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -119,7 +122,7 @@ public class TopicoResource {
 	
 	
 	@PostMapping
-	public ResponseEntity<EntityModel<TopicoResponse>> create(@RequestBody TopicoRequest topicoRequest) {
+	public ResponseEntity<EntityModel<TopicoResponse>> create(@RequestBody @Valid TopicoRequest topicoRequest) {
 		
 		Topico topico = modelMapper.map(topicoRequest, Topico.class);
 		topico.setUsuario(usuarioService.findById(topicoRequest.getUsuarioID()));
@@ -139,12 +142,12 @@ public class TopicoResource {
 	
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<EntityModel<TopicoResponse>> update(@PathVariable(name = "id") Integer id, 
-			@RequestBody TopicoRequest topicoRequest) {
+	@Transactional
+	public ResponseEntity<EntityModel<TopicoResponse>> update(
+			@PathVariable(name = "id") Integer id, 
+			@RequestBody @Valid TopicoRequest topicoRequest) {
 		
 		Topico topico = topicoRequest.update(topicoService.findById(id));
-		
-		topico = topicoService.save(topico);
 		
 		TopicoResponse response = modelMapper.map(topico, TopicoResponse.class);
 		
@@ -189,12 +192,5 @@ public class TopicoResource {
 		
 	}
 	
-	
 }
-
-
-
-
-
-
 
